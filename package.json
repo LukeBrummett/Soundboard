@@ -1,0 +1,48 @@
+{
+  "name": "soundboard",
+  "version": "0.1.0",
+  "description": "A flexible, customizable desktop soundboard with Stream Deck integration",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
+  },
+  "keywords": [
+    "soundboard",
+    "audio",
+    "stream-deck",
+    "streaming",
+    "electron"
+  ],
+  "author": "LukeBrummett",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "@elgato-stream-deck/node": "^7.4.0",
+    "howler": "^2.2.4",
+    "sharp": "^0.34.5"
+  },
+  "build": {
+    "appId": "com.lukebrummett.soundboard",
+    "productName": "Soundboard",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "assets/icons/icon.ico"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ]
+  }
+}
