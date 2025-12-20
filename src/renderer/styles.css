@@ -82,7 +82,7 @@ body {
 .grid-container {
   flex: 1;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   padding: 20px;
   display: flex;
   align-items: center;
@@ -454,11 +454,9 @@ body {
   border-radius: 8px;
   pointer-events: none;
   z-index: 50;
-  display: grid;
-  gap: 10px;
-  padding: 5px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   opacity: 0.5;
+  /* Size and position calculated based on grid coordinates */
 }
 
 .streamdeck-frame-title {

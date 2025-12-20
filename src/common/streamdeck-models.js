@@ -7,6 +7,15 @@ const STREAMDECK_MODELS = {
     columns: 3,
     keyCount: 6,
     iconSize: 80,
+    productId: 0x0090
+  },
+  MINI_V2: {
+    id: 'mini-v2',
+    name: 'Stream Deck Mini V2',
+    rows: 2,
+    columns: 3,
+    keyCount: 6,
+    iconSize: 80,
     productId: 0x0063
   },
   REGULAR: {
@@ -57,8 +66,14 @@ function getModelById(id) {
   return Object.values(STREAMDECK_MODELS).find(m => m.id === id);
 }
 
+// Get model by device model string (from device.MODEL)
+function getModelByName(modelName) {
+  return Object.values(STREAMDECK_MODELS).find(m => m.id === modelName);
+}
+
 module.exports = {
   STREAMDECK_MODELS,
   getModelByProductId,
-  getModelById
+  getModelById,
+  getModelByName
 };

@@ -51,8 +51,8 @@ class ConfigManager {
     return {
       settings: {
         homeGrid: 'home',
-        homeHotkey: 'Ctrl+H',
-        defaultAudioOutput: 'default',
+        homeHotkey: 'Home',
+        audioOutputDevice: 'default',
         volume: 0.8,
         showStreamDeckFrames: true,
         autoSyncStreamDecks: true

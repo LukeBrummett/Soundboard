@@ -1,5 +1,5 @@
 {
-  "name": "soundboard",
+  "name": "SimpleSoundboard",
   "version": "0.1.0",
   "description": "A flexible, customizable desktop soundboard with Stream Deck integration",
   "main": "src/main/main.js",
@@ -24,12 +24,13 @@
   },
   "dependencies": {
     "@elgato-stream-deck/node": "^7.4.0",
+    "ffmpeg-static": "^5.2.0",
     "howler": "^2.2.4",
     "sharp": "^0.34.5"
   },
   "build": {
     "appId": "com.lukebrummett.soundboard",
-    "productName": "Soundboard",
+    "productName": "SimpleSoundboard",
     "directories": {
       "output": "dist"
     },
@@ -43,6 +44,9 @@
       "src/**/*",
       "assets/**/*",
       "package.json"
-    ]
+    ],
+    "npmRebuild": false,
+    "buildDependenciesFromSource": false,
+    "nodeGypRebuild": false
   }
 }
