@@ -1,4 +1,21 @@
-// Stream Deck device models and their specifications
+/**
+ * Stream Deck Device Models
+ * 
+ * This module defines specifications for all supported Elgato Stream Deck models.
+ * Each model has unique dimensions, button counts, and product IDs that are used
+ * for device identification and rendering.
+ */
+
+/**
+ * Stream Deck model specifications
+ * Each entry contains:
+ * - id: Internal identifier
+ * - name: Display name
+ * - rows/columns: Grid layout
+ * - keyCount: Total number of buttons
+ * - iconSize: Button image size in pixels
+ * - productId: USB product ID for device detection
+ */
 const STREAMDECK_MODELS = {
   MINI: {
     id: 'mini',
@@ -56,17 +73,29 @@ const STREAMDECK_MODELS = {
   }
 };
 
-// Get model by product ID
+/**
+ * Find a Stream Deck model by its USB product ID
+ * @param {number} productId - USB product ID
+ * @returns {object|undefined} Model specification or undefined
+ */
 function getModelByProductId(productId) {
   return Object.values(STREAMDECK_MODELS).find(m => m.productId === productId);
 }
 
-// Get model by ID
+/**
+ * Find a Stream Deck model by its internal ID
+ * @param {string} id - Model ID (e.g., 'mini', 'regular', 'xl')
+ * @returns {object|undefined} Model specification or undefined
+ */
 function getModelById(id) {
   return Object.values(STREAMDECK_MODELS).find(m => m.id === id);
 }
 
-// Get model by device model string (from device.MODEL)
+/**
+ * Find a Stream Deck model by its name
+ * @param {string} modelName - Model name from device
+ * @returns {object|undefined} Model specification or undefined
+ */
 function getModelByName(modelName) {
   return Object.values(STREAMDECK_MODELS).find(m => m.id === modelName);
 }

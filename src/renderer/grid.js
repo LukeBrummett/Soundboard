@@ -302,8 +302,6 @@ class GridManager {
   }
 
   handleButtonClick(button, element) {
-    console.log('[Grid] handleButtonClick called:', button ? button.type : 'empty');
-    
     if (!button) {
       // Empty button - show add sound dialog
       if (this.isLocked) {
@@ -315,18 +313,20 @@ class GridManager {
     }
 
     if (button.type === 'sound') {
-      console.log('[Grid] Playing sound button:', button.label, button.audioFile);
-      
       // Play sound with audio settings
       try {
         element.classList.add('playing');
-        const result = this.audio.play(button.audioFile, button.audioSettings);
-        console.log('[Grid] Audio.play() returned:', result);
-        setTimeout(() => element.classList.remove('playing'), 500);
+        this.audio.play(button.audioFile, button.audioSettings);
+        setTimeout(() => {
+          if (element) {
+            element.classList.remove('playing');
+          }
+        }, 500);
       } catch (error) {
-        console.error('[Grid] Error playing audio:', error);
-        console.error('[Grid] Stack:', error.stack);
-        element.classList.remove('playing');
+        console.error('Error playing audio:', error);
+        if (element) {
+          element.classList.remove('playing');
+        }
         alert('Failed to play audio: ' + error.message);
       }
     } else if (button.type === 'navigate') {
