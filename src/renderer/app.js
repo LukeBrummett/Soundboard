@@ -26,13 +26,21 @@ class App {
       const config = this.config.getConfig();
       this.audio.setVolume(config.settings.volume);
       
-      // Set audio output device if configured
+      // Set audio output device if configured - must happen before any audio playback
       console.log('Config settings:', config.settings);
-      if (config.settings.audioOutputDevice) {
+      if (config.settings.audioOutputDevice && config.settings.audioOutputDevice !== 'default') {
         console.log('Setting audio output device to:', config.settings.audioOutputDevice);
-        await this.audio.setAudioOutputDevice(config.settings.audioOutputDevice);
+        try {
+          await this.audio.setAudioOutputDevice(config.settings.audioOutputDevice);
+          console.log('✓ Audio output device configured successfully');
+        } catch (error) {
+          console.error('Failed to set audio output device on startup:', error);
+          console.warn('Falling back to default audio output');
+        }
       } else {
-        console.log('No audio output device configured, using default');
+        console.log('Using default audio output device');
+        // Still initialize the AudioContext even for default device
+        await this.audio.initializeAudioContext();
       }
 
       // Initialize grid manager

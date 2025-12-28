@@ -10,41 +10,71 @@ class AudioManager {
 
   async init() {
     this.userDataPath = await this.ipcRenderer.invoke('get-user-data-path');
+    // Initialize Howler's AudioContext immediately
+    await this.initializeAudioContext();
+  }
+
+  async initializeAudioContext() {
+    // Force Howler to create AudioContext immediately
+    if (typeof Howler !== 'undefined' && !Howler.ctx) {
+      console.log('Initializing Howler AudioContext...');
+      
+      // Create a very short silent sound to force context creation
+      const silent = new Howl({
+        src: ['data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA'],
+        volume: 0,
+        html5: false
+      });
+      
+      // Play and wait for it to actually start
+      const playPromise = new Promise((resolve) => {
+        silent.once('play', () => {
+          console.log('AudioContext initialized');
+          resolve();
+        });
+        silent.play();
+      });
+      
+      await playPromise;
+      silent.unload();
+      
+      // Give AudioContext time to fully initialize
+      await new Promise(resolve => setTimeout(resolve, 150));
+      
+      console.log('AudioContext ready:', !!Howler.ctx);
+    }
   }
 
   async setAudioOutputDevice(deviceId) {
     this.audioOutputDeviceId = deviceId || 'default';
-    console.log('Audio output device set to:', this.audioOutputDeviceId);
+    console.log('Setting audio output device to:', this.audioOutputDeviceId);
     
-    // Set the sink ID on Howler's AudioContext for Web Audio API mode
     try {
-      // Wait for AudioContext to be created (Howler creates it lazily)
-      if (typeof Howler !== 'undefined') {
-        // Force Howler to create AudioContext if it hasn't already
-        if (!Howler.ctx) {
-          // Play a silent sound to initialize the context
-          const silent = new Howl({
-            src: ['data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA'],
-            volume: 0,
-            html5: false
-          });
-          silent.play();
-          silent.unload();
-          // Wait for context to be created
-          await new Promise(resolve => setTimeout(resolve, 100));
-        }
+      // Ensure AudioContext is created first
+      await this.initializeAudioContext();
+      
+      if (!Howler.ctx) {
+        console.error('Failed to initialize AudioContext');
+        return;
+      }
+      
+      // Set the sink ID on Howler's AudioContext
+      if (Howler.ctx.setSinkId) {
+        const sinkId = deviceId === 'default' ? '' : deviceId;
+        await Howler.ctx.setSinkId(sinkId);
+        console.log('✓ AudioContext sink ID set successfully to:', deviceId);
         
-        // Now set sink ID
-        if (Howler.ctx && Howler.ctx.setSinkId) {
-          const sinkId = deviceId === 'default' ? '' : deviceId;
-          await Howler.ctx.setSinkId(sinkId);
-          console.log('AudioContext sink ID set successfully to:', deviceId);
-        } else if (Howler.ctx) {
-          console.warn('setSinkId not supported on AudioContext - audio will use default output');
+        // Verify it was set
+        if (Howler.ctx.sinkId !== undefined) {
+          console.log('  Current sink ID:', Howler.ctx.sinkId || 'default');
         }
+      } else {
+        console.warn('setSinkId not supported on this AudioContext - audio will use default output');
       }
     } catch (error) {
       console.error('Failed to set AudioContext sink ID:', error);
+      console.error('  Device ID attempted:', deviceId);
+      console.error('  Error details:', error.message);
     }
   }
 
